@@ -21,12 +21,25 @@ public class Main {
         frame.getContentPane().add(label);
         frame.pack();
         frame.setVisible(true);
-        
         while (true)
         {
-            img = camera.draw();
-            ImageIcon newFrame = new ImageIcon(img);
-            label.setIcon(newFrame);
+            for(int i = 0; i < 150; i++)
+            {
+                sphere.position = new Vector3(sphere.position.x, ((-1.0/15000) * Math.pow(i, 2)) + 2, sphere.position.z);
+                img = camera.draw();
+                ImageIcon newFrame = new ImageIcon(img);
+                label.setIcon(newFrame);
+
+            }
+            for(int i = 150; i > -1; i--)
+            {
+                sphere.position = new Vector3(sphere.position.x, ((-1.0/15000) * Math.pow(i, 2)) + 2, sphere.position.z);
+                img = camera.draw();
+                ImageIcon newFrame = new ImageIcon(img);
+                label.setIcon(newFrame);
+
+            }
+
         }
     }
 }
