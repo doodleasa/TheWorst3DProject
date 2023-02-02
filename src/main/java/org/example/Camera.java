@@ -33,10 +33,26 @@ public class Camera extends JPanel {
         perp = Vector3.crossProduct(lookAt, up);
     }
 
+    public Camera(Dimension size, double ratio, Vector3 position, Vector3 lookAt, Vector3 up)
+    {
+        lookAt.normalize();
+        up.normalize();
+
+        width = size.width;
+        height = size.height;
+
+        this.position = position;
+        this.lookAt = lookAt;
+        this.up = up;
+
+        shiftPerPixel = ratio/(width-1);
+        perp = Vector3.crossProduct(lookAt, up);
+    }
+
     public BufferedImage draw()
     {
         Renderer scene = Renderer.getInstance();
-        BufferedImage imageOut = new BufferedImage( width, height, BufferedImage.TYPE_4BYTE_ABGR);
+        BufferedImage imageOut = new BufferedImage(width, height, BufferedImage.TYPE_4BYTE_ABGR);
         for(int i = 0; i < width * height; i++)
         {
             Vector3 ray = new Vector3(lookAt.x, lookAt.y, lookAt.z);

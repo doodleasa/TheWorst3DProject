@@ -13,14 +13,14 @@ public class Renderer {
     {
         renderables = new ArrayList<>();
         renderables.add(Ground.getInstance());
-        this.sun = sun;
+        Renderer.sun = sun;
     }
 
     public static Renderer getInstance()
     {
         if (renderer == null)
         {
-            renderer = new Renderer(new Vector3(0, 20, 0));
+            renderer = new Renderer(new Vector3(-3, 20, 5));
         }
         return renderer;
     }
@@ -61,7 +61,10 @@ public class Renderer {
                     distanceToCurrent = renderable.collides(collision, sunDirection);
                 }
                 if (distanceToCurrent >= 0 && distanceToCurrent <= sunDistance) {
-                    return Color.BLACK;
+                    int blue = color.getBlue() / 3;
+                    int red = color.getRed() / 3;
+                    int green = color.getGreen() / 3;
+                    color = new Color(red, green, blue);
                 }
             }
         }
