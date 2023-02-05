@@ -58,4 +58,10 @@ public class Sphere implements Renderable{
     {
         this.position = position;
     }
+
+    public void setY(double Y)
+    {
+        position.y = Y;
+    }
+
 }

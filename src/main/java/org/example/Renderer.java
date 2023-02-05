@@ -32,7 +32,7 @@ public class Renderer {
 
     public Color render(Vector3 pos, Vector3 rot)
     {
-        Double distance = Double.MAX_VALUE;
+        double distance = Double.MAX_VALUE;
         Renderable rendered = SkyBox.getInstance();
         Color color = rendered.getColor();
         for(Renderable renderable: renderables)

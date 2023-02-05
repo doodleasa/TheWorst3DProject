@@ -34,12 +34,15 @@ public class Main {
         frame.pack();
         frame.setVisible(true);
         frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
-        
-//        while (true)
-//        {
-//            img = camera.draw();
-//            ImageIcon newFrame = new ImageIcon(img);
-//            label.setIcon(newFrame);
-//        }
+        int i = 0;
+        while (true)
+        {
+            img = camera.draw();
+            ImageIcon newFrame = new ImageIcon(img);
+            sphere1.setY(Math.sin(i/100.0) + 1);
+            label.setIcon(newFrame);
+
+            i++;
+        }
     }
 }
