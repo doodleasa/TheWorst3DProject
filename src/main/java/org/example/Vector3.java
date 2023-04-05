@@ -59,4 +59,14 @@ public class Vector3 {
         result.z = result.z*scale;
         return result;
     }
+
+    public static Vector3 rotateXZ(Vector3 v, double angle)
+    {
+        angle = Math.toRadians(angle);
+        double cos = Math.cos(angle);
+        double sin = Math.sin(angle);
+        double x = (cos * v.x) - (sin * v.z);
+        double z = (sin * v.x) + (cos * v.z);
+        return new Vector3(x, v.y, z);
+    }
 }

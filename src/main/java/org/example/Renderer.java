@@ -65,6 +65,7 @@ public class Renderer {
                     int red = color.getRed() / 3;
                     int green = color.getGreen() / 3;
                     color = new Color(red, green, blue);
+                    return color;
                 }
             }
         }

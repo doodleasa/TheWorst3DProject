@@ -25,6 +25,8 @@ public class Camera extends JPanel {
 
     BufferedImage imageOut;
 
+    private static Camera instance;
+
 
 
     public Camera(Dimension size, double ratio)
@@ -39,7 +41,7 @@ public class Camera extends JPanel {
         renderer = Renderer.getInstance();
     }
 
-    public Camera(Dimension size, double ratio, Vector3 position, Vector3 lookAt, Vector3 up)
+    private Camera(Dimension size, double ratio, Vector3 position, Vector3 lookAt, Vector3 up)
     {
         lookAt.normalize();
         up.normalize();
@@ -53,6 +55,17 @@ public class Camera extends JPanel {
 
         shiftPerPixel = ratio/(width-1);
         perp = Vector3.crossProduct(lookAt, up);
+    }
+
+    public static Camera init(Dimension size, double ratio, Vector3 position, Vector3 lookAt, Vector3 up)
+    {
+        instance = new Camera(size, ratio, position, lookAt, up);
+        return instance;
+    }
+
+    public static Camera getInstance()
+    {
+        return instance;
     }
 
     public BufferedImage draw()
@@ -82,4 +95,22 @@ public class Camera extends JPanel {
         ray.normalize();
         return new UnresolvedPixel(ray, x, y);
     }
+    public void move(Vector3 shift)
+    {
+        position = Vector3.add(shift, position);
+        perp = Vector3.crossProduct(lookAt, up);
+    }
+
+    public void rotateS(double angle)
+    {
+        lookAt = Vector3.rotateXZ(lookAt, angle);
+        perp = Vector3.crossProduct(lookAt, up);
+    }
+
+    public void rotateU(double angle)
+    {
+        lookAt = Vector3.rotateXZ(lookAt, angle);
+        perp = Vector3.crossProduct(lookAt, up);
+    }
+
 }
