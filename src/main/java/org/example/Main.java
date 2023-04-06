@@ -28,7 +28,7 @@ public class Main {
         Vector3 v2= new Vector3(0, 2,0);
         Vector3 v3 = new Vector3(2, 1.5,-7);
 
-        Sphere sphere1 = new Sphere(Color.GREEN, v1, 0.5);
+        Sphere sphere1 = new Sphere(Color.YELLOW, v1, 0.5);
         renderer.addObject(sphere1);
         Sphere sphere2 = new Sphere(Color.RED, v2, 0.9);
         renderer.addObject(sphere2);
@@ -39,6 +39,10 @@ public class Main {
         Vector3 position = new Vector3(2, 0.5, 0);
         Cube cube = new Cube(Color.darkGray, position, 2.0);
         cube.initialize();
+        Plane floor1 = new Plane(Color.GREEN, new Vector3(-100, 0, -100), new Vector3(100, 0, -100), new Vector3(100, 0 ,100));
+        Plane floor2 = new Plane(Color.GREEN, new Vector3(-100, 0, 100), new Vector3(100, 0, 100), new Vector3(-100, 0 ,-100));
+        renderer.addObject(floor1);
+        renderer.addObject(floor2);
 
         SAction sAction = new SAction();
         WAction wAction = new WAction();

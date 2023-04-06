@@ -70,4 +70,9 @@ public class Plane implements Renderable{
     public Double collidesOtherSide(Vector3 pos, Vector3 rot) {
         return -1.0;
     }
+
+    public Vector3 getNormal()
+    {
+        return normal;
+    }
 }

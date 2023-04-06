@@ -69,4 +69,18 @@ public class Vector3 {
         double z = (sin * v.x) + (cos * v.z);
         return new Vector3(x, v.y, z);
     }
+
+    public static Vector3 inverse(Vector3 v)
+    {
+        System.out.println(v);
+        Vector3 newV =  Vector3.subtract(new Vector3(0.0, 0.0 , 0.0), v);
+        System.out.println(newV);
+        return newV;
+    }
+
+    @Override
+    public String toString()
+    {
+        return "X: " + x + " y: " + y + " z: " + z;
+    }
 }

@@ -12,7 +12,6 @@ public class Renderer {
     private Renderer(Vector3 sun)
     {
         renderables = new ArrayList<>();
-        renderables.add(Ground.getInstance());
         Renderer.sun = sun;
     }
 
@@ -49,6 +48,16 @@ public class Renderer {
         {
             Vector3 collision = Vector3.add(pos, Vector3.scale(rot, distance));
             Vector3 sunDirection = Vector3.subtract(sun, collision);
+            if(rendered.getClass() == Plane.class)
+            {
+                Plane plane = (Plane) rendered;
+                boolean isNormalBright = Vector3.dotProduct(plane.getNormal(), sunDirection) > 0.00001;
+                boolean isRayOnNormal = Vector3.dotProduct(plane.getNormal(), rot) < 0.00001;
+                if (isNormalBright ^ isRayOnNormal)
+                {
+                    return darken(color);
+                }
+            }
             double sunDistance = sunDirection.getLength();
             sunDirection.normalize();
             for(Renderable renderable: renderables) {
@@ -61,14 +70,17 @@ public class Renderer {
                     distanceToCurrent = renderable.collides(collision, sunDirection);
                 }
                 if (distanceToCurrent >= 0 && distanceToCurrent <= sunDistance) {
-                    int blue = color.getBlue() / 3;
-                    int red = color.getRed() / 3;
-                    int green = color.getGreen() / 3;
-                    color = new Color(red, green, blue);
-                    return color;
+                    return darken(color);
                 }
             }
         }
         return color;
+    }
+    private Color darken(Color initial)
+    {
+        int blue = initial.getBlue() / 3;
+        int red = initial.getRed() / 3;
+        int green = initial.getGreen() / 3;
+        return new Color(red, green, blue);
     }
 }
