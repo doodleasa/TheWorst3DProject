@@ -2,6 +2,8 @@ package org.example;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.geom.AffineTransform;
+import java.awt.image.AffineTransformOp;
 import java.awt.image.BufferedImage;
 import java.util.stream.Stream;
 
@@ -27,21 +29,9 @@ public class Camera extends JPanel {
 
     private static Camera instance;
 
+    int scaleF;
 
-
-    private Camera(Dimension size, double ratio)
-    {
-        width = size.width;
-        height = size.height;
-        position = new Vector3(0, 1, 0);
-        lookAt = new Vector3(0, 0, -1);
-        up = new Vector3(0, 1,0);
-        shiftPerPixel = ratio/(width-1);
-        perp = Vector3.crossProduct(lookAt, up);
-        renderer = Renderer.getInstance();
-    }
-
-    private Camera(Dimension size, double ratio, Vector3 position, Vector3 lookAt, Vector3 up)
+    private Camera(Dimension size, double ratio, Vector3 position, Vector3 lookAt, Vector3 up, int scaleF)
     {
         lookAt.normalize();
         up.normalize();
@@ -49,6 +39,7 @@ public class Camera extends JPanel {
         width = size.width;
         height = size.height;
 
+        this.scaleF = scaleF;
         this.position = position;
         this.lookAt = lookAt;
         this.up = up;
@@ -57,9 +48,9 @@ public class Camera extends JPanel {
         perp = Vector3.crossProduct(lookAt, up);
     }
 
-    public static Camera init(Dimension size, double ratio, Vector3 position, Vector3 lookAt, Vector3 up)
+    public static Camera init(Dimension size, double ratio, Vector3 position, Vector3 lookAt, Vector3 up, int scaleF)
     {
-        instance = new Camera(size, ratio, position, lookAt, up);
+        instance = new Camera(size, ratio, position, lookAt, up, scaleF);
         return instance;
     }
 
@@ -83,7 +74,7 @@ public class Camera extends JPanel {
                 .map(index -> ray(index, currentRot, currentUp, currentPerp))
                 .map(pixel -> new Pixel(renderer.render(currentPos, pixel.getRay()), pixel.getX(), pixel.getY()))
                 .forEach(pixel -> imageOut.setRGB(pixel.getX(), pixel.getY(), pixel.getRGB()));
-        return imageOut;
+        return scale(imageOut, BufferedImage.TYPE_4BYTE_ABGR, width * scaleF, height * scaleF, scaleF, scaleF);
     }
 
     private UnresolvedPixel ray (int index, Vector3 lookAt, Vector3 up, Vector3 perp)
@@ -116,6 +107,17 @@ public class Camera extends JPanel {
     {
         lookAt = Vector3.rotateXZ(lookAt, angle);
         perp = Vector3.crossProduct(lookAt, up);
+    }
+
+    public static BufferedImage scale(BufferedImage sbi, int imageType, int dWidth, int dHeight, double fWidth, double fHeight) {
+        BufferedImage dbi = null;
+        if(sbi != null) {
+            dbi = new BufferedImage(dWidth, dHeight, imageType);
+            Graphics2D g = dbi.createGraphics();
+            AffineTransform at = AffineTransform.getScaleInstance(fWidth, fHeight);
+            g.drawRenderedImage(sbi, at);
+        }
+        return dbi;
     }
 
 }
