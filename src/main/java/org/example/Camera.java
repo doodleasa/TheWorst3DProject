@@ -31,6 +31,8 @@ public class Camera extends JPanel {
 
     int scaleF;
 
+    double ratio;
+
     private Camera(Dimension size, double ratio, Vector3 position, Vector3 lookAt, Vector3 up, int scaleF)
     {
         lookAt.normalize();
@@ -43,6 +45,7 @@ public class Camera extends JPanel {
         this.position = position;
         this.lookAt = lookAt;
         this.up = up;
+        this.ratio = ratio;
 
         shiftPerPixel = ratio/(width-1);
         perp = Vector3.crossProduct(lookAt, up);
@@ -119,5 +122,18 @@ public class Camera extends JPanel {
         }
         return dbi;
     }
+
+    void setDimension(Dimension dimension)
+    {
+        width = dimension.width;
+        height = dimension.height;
+        shiftPerPixel = ratio/(width-1);
+    }
+
+    void setSf(int scale)
+    {
+        scaleF = scale;
+    }
+
 
 }

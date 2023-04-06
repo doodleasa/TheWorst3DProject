@@ -14,8 +14,11 @@ public class Main {
     private static Robot robot;
     private static Dimension dimension;
     private static int scaleF;
+    private static int savedSF;
 
     private static JFrame frame;
+
+    private static boolean superRender;
     public static void main(String[] args) throws IOException {
 
         frame = new JFrame();
@@ -24,13 +27,17 @@ public class Main {
         //dimension = new Dimension(100, 100);
         //dimension = new Dimension(10,10);
         //dimension = new Dimension(1920, 1080);
-        dimension = new Dimension(96, 54);
-        scaleF = 20;
+        //dimension = new Dimension(192, 108);
+        scaleF = 15;
+        savedSF = scaleF;
+        dimension = new Dimension(1920/scaleF, 1080/scaleF);
+
 
         Vector3 cameraPos = new Vector3(-2, 2, 0);
         Vector3 cameraLookAt = new Vector3(1, 0, 0);
         Vector3 up = new Vector3(0, 1, 0);
         Camera camera = Camera.init(dimension, 16 / 9.0, cameraPos, cameraLookAt, up, scaleF);
+        superRender = false;
 
         try {
             robot = new Robot();
@@ -82,38 +89,55 @@ public class Main {
     }
 
     private static void movementTick() {
-        Point Mpoint = MouseInfo.getPointerInfo().getLocation();
-        Point Cpoint = frame.getLocation();
-        Point cCenter = new Point(dimension.width * scaleF / 2, dimension.height * scaleF /2);
+        Camera camera = Camera.getInstance();
+        if (Keyboard.isKeyPressed(32))
+        {
+            dimension = new Dimension(scaleF * dimension.width, scaleF * dimension.height);
+            scaleF = 1;
+            camera.setDimension(dimension);
+            camera.setSf(scaleF);
+        }
+        else if(savedSF != scaleF)
+        {
+            scaleF = savedSF;
+            dimension = new Dimension(dimension.width / scaleF, dimension.height / scaleF);
+            camera.setDimension(dimension);
+            camera.setSf(scaleF);
+        }
+        else {
+            Point Mpoint = MouseInfo.getPointerInfo().getLocation();
+            Point Cpoint = frame.getLocation();
+            Point cCenter = new Point(dimension.width * scaleF / 2, dimension.height * scaleF /2);
 
-        Point point = new Point(Mpoint.x - Cpoint.x - cCenter.x, Mpoint.y - Cpoint.y - cCenter.y);
+            Point point = new Point(Mpoint.x - Cpoint.x - cCenter.x, Mpoint.y - Cpoint.y - cCenter.y);
 
-        int xpos = point.x;
+            int xpos = point.x;
 
-        if (xpos != 0)
-        {
-            Camera.getInstance().rotateS(xpos / 3.0);
-        }
+            if (xpos != 0)
+            {
+                camera.rotateS(xpos / 3.0);
+            }
 
-        if (Keyboard.isKeyPressed(87))
-        {
-            Camera.getInstance().move(Vector3.scale(Camera.getInstance().lookAt, 0.1));
-        }
-        if (Keyboard.isKeyPressed(83))
-        {
-            Camera.getInstance().move(Vector3.scale(Camera.getInstance().lookAt, -0.1));
-        }
-        if (Keyboard.isKeyPressed(65))
-        {
-            Camera.getInstance().move(Vector3.scale(Vector3.crossProduct(Camera.getInstance().lookAt, Camera.getInstance().up), -0.1));
-        }
-        if (Keyboard.isKeyPressed(68))
-        {
-            Camera.getInstance().move(Vector3.scale(Vector3.crossProduct(Camera.getInstance().lookAt, Camera.getInstance().up), 0.1));
-        }
-        if (Keyboard.isKeyPressed(27))
-        {
-            System.exit(0);
+            if (Keyboard.isKeyPressed(87))
+            {
+                camera.move(Vector3.scale(Camera.getInstance().lookAt, 0.1));
+            }
+            if (Keyboard.isKeyPressed(83))
+            {
+                camera.move(Vector3.scale(Camera.getInstance().lookAt, -0.1));
+            }
+            if (Keyboard.isKeyPressed(65))
+            {
+                camera.move(Vector3.scale(Vector3.crossProduct(Camera.getInstance().lookAt, Camera.getInstance().up), -0.1));
+            }
+            if (Keyboard.isKeyPressed(68))
+            {
+                camera.move(Vector3.scale(Vector3.crossProduct(Camera.getInstance().lookAt, Camera.getInstance().up), 0.1));
+            }
+            if (Keyboard.isKeyPressed(27))
+            {
+                System.exit(0);
+            }
         }
         robot.mouseMove(dimension.width * scaleF / 2, dimension.height * scaleF / 2);
     }
