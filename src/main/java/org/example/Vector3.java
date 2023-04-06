@@ -83,4 +83,9 @@ public class Vector3 {
     {
         return "X: " + x + " y: " + y + " z: " + z;
     }
+
+    public Vector3 copy()
+    {
+        return new Vector3(x, y, z);
+    }
 }

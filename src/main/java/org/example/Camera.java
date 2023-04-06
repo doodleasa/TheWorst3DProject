@@ -29,7 +29,7 @@ public class Camera extends JPanel {
 
 
 
-    public Camera(Dimension size, double ratio)
+    private Camera(Dimension size, double ratio)
     {
         width = size.width;
         height = size.height;
@@ -73,15 +73,20 @@ public class Camera extends JPanel {
         renderer = Renderer.getInstance();
         imageOut = new BufferedImage(width, height, BufferedImage.TYPE_4BYTE_ABGR);
         int size = width * height;
+        Vector3 currentPos = position.copy();
+        Vector3 currentRot = lookAt.copy();
+        Vector3 currentUp = up.copy();
+        Vector3 currentPerp = perp.copy();
+
         Stream.iterate(0, n -> n + 1)
                 .limit(width * height)
-                .map(this::ray)
-                .map(pixel -> new Pixel(renderer.render(position, pixel.getRay()), pixel.getX(), pixel.getY()))
+                .map(index -> ray(index, currentRot, currentUp, currentPerp))
+                .map(pixel -> new Pixel(renderer.render(currentPos, pixel.getRay()), pixel.getX(), pixel.getY()))
                 .forEach(pixel -> imageOut.setRGB(pixel.getX(), pixel.getY(), pixel.getRGB()));
         return imageOut;
     }
 
-    private UnresolvedPixel ray (int index)
+    private UnresolvedPixel ray (int index, Vector3 lookAt, Vector3 up, Vector3 perp)
     {
         Vector3 ray = new Vector3(lookAt.x, lookAt.y, lookAt.z);
         int x = index % width;
