@@ -3,7 +3,6 @@ package org.example;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.geom.AffineTransform;
-import java.awt.image.AffineTransformOp;
 import java.awt.image.BufferedImage;
 import java.util.stream.Stream;
 
@@ -100,16 +99,22 @@ public class Camera extends JPanel {
         perp = Vector3.crossProduct(lookAt, up);
     }
 
-    public void rotateS(double angle)
+    public void rotateY(double angle)
     {
-        lookAt = Vector3.rotateXZ(lookAt, angle);
+        angle *= -1;
+        lookAt = Vector3.rotateY(lookAt, angle);
+        up = Vector3.rotateY(up, angle);
         perp = Vector3.crossProduct(lookAt, up);
     }
 
-    public void rotateU(double angle)
+    public void rotateP(double angle)
     {
-        lookAt = Vector3.rotateXZ(lookAt, angle);
+        lookAt = Vector3.rotateA(lookAt, perp, angle);
+        up = Vector3.rotateA(up, perp, angle);
         perp = Vector3.crossProduct(lookAt, up);
+        lookAt.normalize();
+        up.normalize();
+        perp.normalize();
     }
 
     public static BufferedImage scale(BufferedImage sbi, int imageType, int dWidth, int dHeight, double fWidth, double fHeight) {

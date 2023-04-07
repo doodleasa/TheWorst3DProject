@@ -60,14 +60,22 @@ public class Vector3 {
         return result;
     }
 
-    public static Vector3 rotateXZ(Vector3 v, double angle)
+    public static Vector3 rotateY(Vector3 v, double angle)
     {
-        angle = Math.toRadians(angle);
-        double cos = Math.cos(angle);
-        double sin = Math.sin(angle);
-        double x = (cos * v.x) - (sin * v.z);
-        double z = (sin * v.x) + (cos * v.z);
-        return new Vector3(x, v.y, z);
+        Vector3 y = new Vector3(0, 1, 0);
+        return rotateA(v, y, angle);
+    }
+
+    public static Vector3 rotateA(Vector3 v, Vector3 k, double angle)
+    {
+        k.normalize();
+        v.normalize();
+        double angleR = Math.toRadians(angle);
+        double sin = Math.sin(angleR);
+        double cos = Math.cos(angleR);
+
+        Vector3 r = Vector3.add(Vector3.add(Vector3.scale(v, cos), Vector3.scale(Vector3.crossProduct(k, v), sin)), Vector3.scale(Vector3.scale(k, Vector3.dotProduct(k, v)), 1 - cos));
+        return r;
     }
 
     public static Vector3 inverse(Vector3 v)
@@ -87,5 +95,12 @@ public class Vector3 {
     public Vector3 copy()
     {
         return new Vector3(x, y, z);
+    }
+
+    public static double angleBetweenVectors(Vector3 v1, Vector3 v2)
+    {
+        double dot = Vector3.dotProduct(v1, v2);
+        double divisor = v1.getLength() * v2.getLength();
+        return Math.toDegrees(Math.acos(dot/divisor));
     }
 }

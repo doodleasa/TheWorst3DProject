@@ -1,13 +1,9 @@
 package org.example;
 
-import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.*;
 import java.awt.image.BufferedImage;
-import java.io.File;
 import java.io.IOException;
-import org.example.Keyboard;
 
 public class Main {
 
@@ -20,7 +16,6 @@ public class Main {
 
     private static boolean superRender;
     public static void main(String[] args) throws IOException {
-
         frame = new JFrame();
         frame.getContentPane().setLayout(new FlowLayout());
         //dimension = new Dimension(768, 480);
@@ -34,6 +29,7 @@ public class Main {
 
 
         Vector3 cameraPos = new Vector3(-2, 2, 0);
+        double numbe = Math.sqrt(3)/2;
         Vector3 cameraLookAt = new Vector3(1, 0, 0);
         Vector3 up = new Vector3(0, 1, 0);
         Camera camera = Camera.init(dimension, 16 / 9.0, cameraPos, cameraLookAt, up, scaleF);
@@ -105,6 +101,11 @@ public class Main {
             camera.setSf(scaleF);
         }
         else {
+
+            Vector3 movementDirection = camera.lookAt.copy();
+            movementDirection.y = 0;
+            movementDirection.normalize();
+
             Point Mpoint = MouseInfo.getPointerInfo().getLocation();
             Point Cpoint = frame.getLocation();
             Point cCenter = new Point(dimension.width * scaleF / 2, dimension.height * scaleF /2);
@@ -113,26 +114,31 @@ public class Main {
 
             int xpos = point.x;
 
+            int ypos = point.y;
+
             if (xpos != 0)
             {
-                camera.rotateS(xpos / 3.0);
+                camera.rotateY(xpos / 3.0);
             }
-
+            if (ypos != 0)
+            {
+                camera.rotateP(-ypos / 3.0);
+            }
             if (Keyboard.isKeyPressed(87))
             {
-                camera.move(Vector3.scale(Camera.getInstance().lookAt, 0.1));
+                camera.move(Vector3.scale(movementDirection, 0.1));
             }
             if (Keyboard.isKeyPressed(83))
             {
-                camera.move(Vector3.scale(Camera.getInstance().lookAt, -0.1));
+                camera.move(Vector3.scale(movementDirection, -0.1));
             }
             if (Keyboard.isKeyPressed(65))
             {
-                camera.move(Vector3.scale(Vector3.crossProduct(Camera.getInstance().lookAt, Camera.getInstance().up), -0.1));
+                camera.move(Vector3.scale(Vector3.crossProduct(movementDirection, Camera.getInstance().up), -0.1));
             }
             if (Keyboard.isKeyPressed(68))
             {
-                camera.move(Vector3.scale(Vector3.crossProduct(Camera.getInstance().lookAt, Camera.getInstance().up), 0.1));
+                camera.move(Vector3.scale(Vector3.crossProduct(movementDirection, Camera.getInstance().up), 0.1));
             }
             if (Keyboard.isKeyPressed(27))
             {
