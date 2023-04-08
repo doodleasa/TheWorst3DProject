@@ -134,11 +134,11 @@ public class Main {
             }
             if (Keyboard.isKeyPressed(65))
             {
-                camera.move(Vector3.scale(Vector3.crossProduct(movementDirection, Camera.getInstance().up), -0.1));
+                camera.move(Vector3.scale(camera.perp, -0.1));
             }
             if (Keyboard.isKeyPressed(68))
             {
-                camera.move(Vector3.scale(Vector3.crossProduct(movementDirection, Camera.getInstance().up), 0.1));
+                camera.move(Vector3.scale(camera.perp, 0.1));
             }
             if (Keyboard.isKeyPressed(27))
             {
