@@ -23,13 +23,12 @@ public class Main {
         //dimension = new Dimension(10,10);
         //dimension = new Dimension(1920, 1080);
         //dimension = new Dimension(192, 108);
-        scaleF = 15;
+        scaleF = 5;
         savedSF = scaleF;
         dimension = new Dimension(1920/scaleF, 1080/scaleF);
 
 
         Vector3 cameraPos = new Vector3(-2, 2, 0);
-        double numbe = Math.sqrt(3)/2;
         Vector3 cameraLookAt = new Vector3(1, 0, 0);
         Vector3 up = new Vector3(0, 1, 0);
         Camera camera = Camera.init(dimension, 16 / 9.0, cameraPos, cameraLookAt, up, scaleF);
@@ -43,9 +42,9 @@ public class Main {
 
         Renderer renderer = Renderer.getInstance();
 
-        Vector3 v1 = new Vector3(0, 2, -5);
+        Vector3 v1 = new Vector3(0, 4, -5);
         Vector3 v2 = new Vector3(0, 2, 0);
-        Vector3 v3 = new Vector3(2, 1.5, -7);
+        Vector3 v3 = new Vector3(2, 3.5, -7);
 
         Sphere sphere1 = new Sphere(Color.YELLOW, v1, 0.5);
         renderer.addObject(sphere1);
@@ -122,7 +121,19 @@ public class Main {
             }
             if (ypos != 0)
             {
-                camera.rotateP(-ypos / 3.0);
+                double newAngle = -ypos / 3.0;
+                double angleU = Vector3.angleBetweenVectors(new Vector3(0, 1, 0), camera.lookAt);
+                double angleD = Vector3.angleBetweenVectors(new Vector3(0, -1, 0), camera.lookAt);
+                if (angleU < newAngle)
+                {
+                    camera.rotateP(angleU);
+                } else if (angleD < newAngle * -1)
+                {
+                    camera.rotateP(angleD * -1);
+                } else
+                {
+                    camera.rotateP(newAngle);
+                }
             }
             if (Keyboard.isKeyPressed(87))
             {
