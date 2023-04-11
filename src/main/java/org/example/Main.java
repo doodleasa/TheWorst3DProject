@@ -29,8 +29,8 @@ public class Main {
         //dimension = new Dimension(10,10);
         //dimension = new Dimension(1920, 1080);
         //dimension = new Dimension(192, 108);
-        scaleF = 100;
-        uScaleF = 5;
+        scaleF = 20;
+        uScaleF = 1;
         dimension = new Dimension(1920/scaleF, 1080/scaleF);
         uDimension = new Dimension(1920/uScaleF, 1080/uScaleF);
         superRender = false;
@@ -69,8 +69,8 @@ public class Main {
         renderer.addObject(floor1);
         renderer.addObject(floor2);
 
-        Vector3 offSet = new Vector3(5, 2, 8);
-        STLObject kleinBottle = new STLObject(Paths.get("src/main/java/org/example/objects/kleinBottle.stl"), Color.magenta, offSet);
+        Vector3 offSet = new Vector3(10, 1.5, 17);
+        STLObject kleinBottle = new STLObject(Paths.get("src/main/java/org/example/objects/knight.stl"), Color.magenta, offSet, 0.1);
         kleinBottle.initialize();
 
 
@@ -109,6 +109,9 @@ public class Main {
         Camera camera = Camera.getInstance();
         if(!superRender)
         {
+            camera.setDimension(dimension);
+            camera.setSf(scaleF);
+
             Vector3 movementDirection = camera.lookAt.copy();
             movementDirection.y = 0;
             movementDirection.normalize();
@@ -160,25 +163,17 @@ public class Main {
                 camera.move(Vector3.scale(camera.perp, 0.1));
             }
         }
+        else {
+            camera.setDimension(uDimension);
+            camera.setSf(uScaleF);
+        }
         robot.mouseMove(dimension.width * scaleF / 2, dimension.height * scaleF / 2);
     }
 
     public static class SpaceAction extends AbstractAction {
         @Override
         public void actionPerformed(ActionEvent e) {
-            Camera camera = Camera.getInstance();
-            if (camera.getScaleF() == scaleF)
-            {
-                camera.setDimension(uDimension);
-                camera.setSf(uScaleF);
-                superRender = true;
-            }
-            else
-            {
-                camera.setDimension(dimension);
-                camera.setSf(scaleF);
-                superRender = false;
-            }
+            superRender = !superRender;
         }
     }
 

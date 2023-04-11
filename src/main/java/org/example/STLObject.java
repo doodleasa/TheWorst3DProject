@@ -16,7 +16,7 @@ public class STLObject implements Cobject{
         }
     }
 
-    public STLObject(Path filepath, Color color, Vector3 offSet) throws IOException {
+    public STLObject(Path filepath, Color color, Vector3 offSet, double scale) throws IOException {
         planes = new ArrayList<>();
         ArrayList<Triangle> triangles;
         try {
@@ -26,7 +26,7 @@ public class STLObject implements Cobject{
             throw e;
         }
         for (Triangle triangle :triangles) {
-             planes.add(triangle.convertToPlane(color, offSet));
+             planes.add(triangle.convertToPlane(color, offSet, scale));
         }
     }
 }

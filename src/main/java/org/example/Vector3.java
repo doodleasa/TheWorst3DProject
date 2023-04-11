@@ -103,4 +103,12 @@ public class Vector3 {
         double divisor = v1.getLength() * v2.getLength();
         return Math.toDegrees(Math.acos(dot/divisor));
     }
+
+    public static Vector3 swapToWorseCordinateSystem(Vector3 v)
+    {
+        double temp = v.y;
+        v.y = v.z;
+        v.z = temp;
+        return v;
+    }
 }
