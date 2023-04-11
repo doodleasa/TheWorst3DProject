@@ -140,5 +140,10 @@ public class Camera extends JPanel {
         scaleF = scale;
     }
 
+    int getScaleF()
+    {
+        return  scaleF;
+    }
+
 
 }

@@ -2,19 +2,25 @@ package org.example;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.ActionEvent;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
+import java.nio.file.Paths;
 
 public class Main {
 
     private static Robot robot;
     private static Dimension dimension;
     private static int scaleF;
-    private static int savedSF;
+
+    private static int uScaleF;
 
     private static JFrame frame;
 
+    private static Dimension uDimension;
+
     private static boolean superRender;
+
     public static void main(String[] args) throws IOException {
         frame = new JFrame();
         frame.getContentPane().setLayout(new FlowLayout());
@@ -23,16 +29,17 @@ public class Main {
         //dimension = new Dimension(10,10);
         //dimension = new Dimension(1920, 1080);
         //dimension = new Dimension(192, 108);
-        scaleF = 5;
-        savedSF = scaleF;
+        scaleF = 100;
+        uScaleF = 5;
         dimension = new Dimension(1920/scaleF, 1080/scaleF);
+        uDimension = new Dimension(1920/uScaleF, 1080/uScaleF);
+        superRender = false;
 
 
         Vector3 cameraPos = new Vector3(-2, 2, 0);
         Vector3 cameraLookAt = new Vector3(1, 0, 0);
         Vector3 up = new Vector3(0, 1, 0);
         Camera camera = Camera.init(dimension, 16 / 9.0, cameraPos, cameraLookAt, up, scaleF);
-        superRender = false;
 
         try {
             robot = new Robot();
@@ -62,8 +69,23 @@ public class Main {
         renderer.addObject(floor1);
         renderer.addObject(floor2);
 
+        Vector3 offSet = new Vector3(5, 2, 8);
+        STLObject kleinBottle = new STLObject(Paths.get("src/main/java/org/example/objects/kleinBottle.stl"), Color.magenta, offSet);
+        kleinBottle.initialize();
+
+
         BufferedImage img = camera.draw();
         JLabel label = new JLabel(new ImageIcon(img));
+
+        SpaceAction spaceAction = new SpaceAction();
+        EscapeAction escapeAction = new EscapeAction();
+
+        label.getInputMap().put(KeyStroke.getKeyStroke("SPACE"), spaceAction);
+        label.getActionMap().put(spaceAction, spaceAction);
+
+        label.getInputMap().put(KeyStroke.getKeyStroke("ESCAPE"), escapeAction);
+        label.getActionMap().put(escapeAction, escapeAction);
+
         frame.getContentPane().add(label);
 
         frame.setCursor(frame.getToolkit().createCustomCursor(
@@ -85,22 +107,8 @@ public class Main {
 
     private static void movementTick() {
         Camera camera = Camera.getInstance();
-        if (Keyboard.isKeyPressed(32))
+        if(!superRender)
         {
-            dimension = new Dimension(scaleF * dimension.width, scaleF * dimension.height);
-            scaleF = 1;
-            camera.setDimension(dimension);
-            camera.setSf(scaleF);
-        }
-        else if(savedSF != scaleF)
-        {
-            scaleF = savedSF;
-            dimension = new Dimension(dimension.width / scaleF, dimension.height / scaleF);
-            camera.setDimension(dimension);
-            camera.setSf(scaleF);
-        }
-        else {
-
             Vector3 movementDirection = camera.lookAt.copy();
             movementDirection.y = 0;
             movementDirection.normalize();
@@ -151,11 +159,36 @@ public class Main {
             {
                 camera.move(Vector3.scale(camera.perp, 0.1));
             }
-            if (Keyboard.isKeyPressed(27))
-            {
-                System.exit(0);
-            }
         }
         robot.mouseMove(dimension.width * scaleF / 2, dimension.height * scaleF / 2);
     }
+
+    public static class SpaceAction extends AbstractAction {
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            Camera camera = Camera.getInstance();
+            if (camera.getScaleF() == scaleF)
+            {
+                camera.setDimension(uDimension);
+                camera.setSf(uScaleF);
+                superRender = true;
+            }
+            else
+            {
+                camera.setDimension(dimension);
+                camera.setSf(scaleF);
+                superRender = false;
+            }
+        }
+    }
+
+    public static class EscapeAction extends AbstractAction {
+
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            System.exit(0);
+        }
+    }
+
+
 }

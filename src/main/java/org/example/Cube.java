@@ -5,7 +5,6 @@ import java.util.ArrayList;
 
 public class Cube implements Cobject{
 
-    static Renderer renderer;
     ArrayList<Plane> planes;
 
     public Cube(Color color, Vector3 position, Double size)
@@ -16,7 +15,6 @@ public class Cube implements Cobject{
     public Cube(Color color, Vector3 position, Double length, Double width, double height)
     {
         planes = new ArrayList<>();
-        renderer = Renderer.getInstance();
 
         Vector3 cv0 = position;
         Vector3 cv1 = new Vector3(position.x + length, position.y, position.z);
@@ -55,6 +53,7 @@ public class Cube implements Cobject{
     }
     @Override
     public void initialize() {
+        Renderer renderer = Renderer.getInstance();
         for(Plane plane : planes)
         {
             renderer.addObject(plane);
