@@ -24,13 +24,8 @@ public class Main {
     public static void main(String[] args) throws IOException {
         frame = new JFrame();
         frame.getContentPane().setLayout(new FlowLayout());
-        //dimension = new Dimension(768, 480);
-        //dimension = new Dimension(100, 100);
-        //dimension = new Dimension(10,10);
-        //dimension = new Dimension(1920, 1080);
-        //dimension = new Dimension(192, 108);
         scaleF = 20;
-        uScaleF = 1;
+        uScaleF = 2;
         dimension = new Dimension(1920/scaleF, 1080/scaleF);
         uDimension = new Dimension(1920/uScaleF, 1080/uScaleF);
         superRender = false;
@@ -63,14 +58,14 @@ public class Main {
         renderer.addObject(plane1);
         Vector3 position = new Vector3(2, 0.5, 0);
         Cube cube = new Cube(Color.darkGray, position, 2.0);
-        cube.initialize();
+        //cube.initialize();
         Plane floor1 = new Plane(Color.GREEN, new Vector3(-100, 0, -100), new Vector3(100, 0, -100), new Vector3(100, 0, 100));
         Plane floor2 = new Plane(Color.GREEN, new Vector3(-100, 0, 100), new Vector3(100, 0, 100), new Vector3(-100, 0, -100));
         renderer.addObject(floor1);
         renderer.addObject(floor2);
 
         Vector3 offSet = new Vector3(10, 1.5, 17);
-        STLObject kleinBottle = new STLObject(Paths.get("src/main/java/org/example/objects/knight.stl"), Color.magenta, offSet, 0.1);
+        STLObject kleinBottle = new STLObject(Paths.get("src/main/java/org/example/objects/Knight.stl"), Color.magenta, offSet, 1);
         kleinBottle.initialize();
 
 
