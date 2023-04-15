@@ -6,6 +6,8 @@ import java.awt.event.ActionEvent;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.nio.file.Paths;
+import java.time.Duration;
+import java.time.Instant;
 
 public class Main {
 
@@ -21,11 +23,13 @@ public class Main {
 
     private static boolean superRender;
 
+    private static Instant previousFrameTime;
+
     public static void main(String[] args) throws IOException {
         frame = new JFrame();
         frame.getContentPane().setLayout(new FlowLayout());
-        scaleF = 20;
-        uScaleF = 2;
+        scaleF = 4;
+        uScaleF = 1;
         dimension = new Dimension(1920/scaleF, 1080/scaleF);
         uDimension = new Dimension(1920/uScaleF, 1080/uScaleF);
         superRender = false;
@@ -65,8 +69,8 @@ public class Main {
         renderer.addObject(floor2);
 
         Vector3 offSet = new Vector3(10, 1.5, 17);
-        STLObject kleinBottle = new STLObject(Paths.get("src/main/java/org/example/objects/Knight.stl"), Color.magenta, offSet, 1);
-        kleinBottle.initialize();
+        STLObject knight = new STLObject(Paths.get("src/main/java/org/example/objects/Knight.stl"), Color.magenta, offSet, 1);
+        //knight.initialize();
 
 
         BufferedImage img = camera.draw();
@@ -102,8 +106,19 @@ public class Main {
 
     private static void movementTick() {
         Camera camera = Camera.getInstance();
+        Instant frameTime = Instant.now();
+        double dt = 0;
+        if (previousFrameTime != null)
+        {
+            Duration deltaT = Duration.between(previousFrameTime, frameTime);
+            dt = deltaT.toMillis();
+        }
+        previousFrameTime = frameTime;
+
         if(!superRender)
         {
+
+
             camera.setDimension(dimension);
             camera.setSf(scaleF);
 
@@ -141,21 +156,22 @@ public class Main {
                     camera.rotateP(newAngle);
                 }
             }
+            double scale = dt/200;
             if (Keyboard.isKeyPressed(87))
             {
-                camera.move(Vector3.scale(movementDirection, 0.1));
+                camera.move(Vector3.scale(movementDirection, scale));
             }
             if (Keyboard.isKeyPressed(83))
             {
-                camera.move(Vector3.scale(movementDirection, -0.1));
+                camera.move(Vector3.scale(movementDirection, -scale));
             }
             if (Keyboard.isKeyPressed(65))
             {
-                camera.move(Vector3.scale(camera.perp, -0.1));
+                camera.move(Vector3.scale(camera.perp, -scale));
             }
             if (Keyboard.isKeyPressed(68))
             {
-                camera.move(Vector3.scale(camera.perp, 0.1));
+                camera.move(Vector3.scale(camera.perp, scale));
             }
         }
         else {
