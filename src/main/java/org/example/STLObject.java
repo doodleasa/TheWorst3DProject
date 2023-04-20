@@ -9,9 +9,10 @@ public class STLObject implements Cobject{
 
     ArrayList<Plane> planes;
     @Override
-    public void initialize() {
+    public void initialize(boolean shaded) {
         Renderer renderer = Renderer.getInstance();
         for (Plane plane : planes) {
+            plane.setShaded(shaded);
             renderer.addObject(plane);
         }
     }

@@ -28,8 +28,8 @@ public class Main {
     public static void main(String[] args) throws IOException {
         frame = new JFrame();
         frame.getContentPane().setLayout(new FlowLayout());
-        scaleF = 4;
-        uScaleF = 1;
+        scaleF = 10;
+        uScaleF = 2;
         dimension = new Dimension(1920/scaleF, 1080/scaleF);
         uDimension = new Dimension(1920/uScaleF, 1080/uScaleF);
         superRender = false;
@@ -62,16 +62,21 @@ public class Main {
         renderer.addObject(plane1);
         Vector3 position = new Vector3(2, 0.5, 0);
         Cube cube = new Cube(Color.darkGray, position, 2.0);
-        //cube.initialize();
+        cube.initialize(true);
         Plane floor1 = new Plane(Color.GREEN, new Vector3(-100, 0, -100), new Vector3(100, 0, -100), new Vector3(100, 0, 100));
         Plane floor2 = new Plane(Color.GREEN, new Vector3(-100, 0, 100), new Vector3(100, 0, 100), new Vector3(-100, 0, -100));
         renderer.addObject(floor1);
         renderer.addObject(floor2);
 
-        Vector3 offSet = new Vector3(10, 1.5, 17);
-        STLObject knight = new STLObject(Paths.get("src/main/java/org/example/objects/Knight.stl"), Color.magenta, offSet, 1);
-        //knight.initialize();
+        Vector3 offSet = new Vector3(10, 10, 17);
 
+        STLObject knight = new STLObject(Paths.get("src/main/java/org/example/objects/Knight.stl"), Color.magenta, offSet, 1);
+        STLObject fear = new STLObject(Paths.get("src/main/java/org/example/objects/fear.stl"), Color.black, offSet, 1);
+        STLObject bottle = new STLObject(Paths.get("src/main/java/org/example/objects/kleinBottle.stl"), Color.red, offSet, 1);
+
+        //knight.initialize(true);
+        //fear.initialize(false);
+        //bottle.initialize(true);
 
         BufferedImage img = camera.draw();
         JLabel label = new JLabel(new ImageIcon(img));
@@ -115,20 +120,20 @@ public class Main {
         }
         previousFrameTime = frameTime;
 
-        if(!superRender)
-        {
+        if(!superRender) {
 
 
             camera.setDimension(dimension);
             camera.setSf(scaleF);
 
             Vector3 movementDirection = camera.lookAt.copy();
+            Vector3 up = new Vector3(0, 1, 0);
             movementDirection.y = 0;
             movementDirection.normalize();
 
             Point Mpoint = MouseInfo.getPointerInfo().getLocation();
             Point Cpoint = frame.getLocation();
-            Point cCenter = new Point(dimension.width * scaleF / 2, dimension.height * scaleF /2);
+            Point cCenter = new Point(dimension.width * scaleF / 2, dimension.height * scaleF / 2);
 
             Point point = new Point(Mpoint.x - Cpoint.x - cCenter.x, Mpoint.y - Cpoint.y - cCenter.y);
 
@@ -136,42 +141,41 @@ public class Main {
 
             int ypos = point.y;
 
-            if (xpos != 0)
-            {
+            if (xpos != 0) {
                 camera.rotateY(xpos / 3.0);
             }
-            if (ypos != 0)
-            {
+            if (ypos != 0) {
                 double newAngle = -ypos / 3.0;
                 double angleU = Vector3.angleBetweenVectors(new Vector3(0, 1, 0), camera.lookAt);
                 double angleD = Vector3.angleBetweenVectors(new Vector3(0, -1, 0), camera.lookAt);
-                if (angleU < newAngle)
-                {
+                if (angleU < newAngle) {
                     camera.rotateP(angleU);
-                } else if (angleD < newAngle * -1)
-                {
+                } else if (angleD < newAngle * -1) {
                     camera.rotateP(angleD * -1);
-                } else
-                {
+                } else {
                     camera.rotateP(newAngle);
                 }
             }
-            double scale = dt/200;
-            if (Keyboard.isKeyPressed(87))
-            {
+            double scale = dt / 200;
+            if (Keyboard.isKeyPressed(87)) {
                 camera.move(Vector3.scale(movementDirection, scale));
             }
-            if (Keyboard.isKeyPressed(83))
-            {
+            if (Keyboard.isKeyPressed(83)) {
                 camera.move(Vector3.scale(movementDirection, -scale));
             }
-            if (Keyboard.isKeyPressed(65))
-            {
+            if (Keyboard.isKeyPressed(65)) {
                 camera.move(Vector3.scale(camera.perp, -scale));
             }
-            if (Keyboard.isKeyPressed(68))
-            {
+            if (Keyboard.isKeyPressed(68)) {
                 camera.move(Vector3.scale(camera.perp, scale));
+            }
+            if (Keyboard.isKeyPressed(69))
+            {
+                camera.move(Vector3.scale(up, scale));
+            }
+            if (Keyboard.isKeyPressed(81))
+            {
+                camera.move(Vector3.scale(up, -scale));
             }
         }
         else {
@@ -195,6 +199,4 @@ public class Main {
             System.exit(0);
         }
     }
-
-
 }

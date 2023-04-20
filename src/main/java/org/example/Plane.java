@@ -8,6 +8,8 @@ public class Plane implements Renderable{
     private Vector3 v1;
     private Vector3 v2;
     private Vector3 normal;
+
+    private boolean shaded = true;
     Color color;
 
     public Plane(Color color, Vector3 v0, Vector3 v1, Vector3 v2)
@@ -63,7 +65,7 @@ public class Plane implements Renderable{
 
     @Override
     public boolean isShaded() {
-        return true;
+        return shaded;
     }
 
     @Override
@@ -75,4 +77,10 @@ public class Plane implements Renderable{
     {
         return normal;
     }
+
+    public void setShaded(boolean shaded)
+    {
+        this.shaded = shaded;
+    }
+
 }

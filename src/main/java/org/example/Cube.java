@@ -52,10 +52,11 @@ public class Cube implements Cobject{
         planes.add(o2);
     }
     @Override
-    public void initialize() {
+    public void initialize(boolean shaded) {
         Renderer renderer = Renderer.getInstance();
         for(Plane plane : planes)
         {
+            plane.setShaded(shaded);
             renderer.addObject(plane);
         }
     }
